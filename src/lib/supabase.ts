@@ -9,11 +9,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 // Contact type definition
 export interface Contact {
   id?: number
+  full_name: string
+  email: string
+  phone: string
+  region: string
   district: string
   position: string
-  name: string
-  telephone: string
-  number: string
+  role: string
+  custom_role: string
+  experience: string
+  motivation: string
+  kc: string
+  hb: string
+  kk: string
   created_at?: string
   updated_at?: string
 }
@@ -93,7 +101,7 @@ export const contactService = {
     const { data, error } = await supabase
       .from('contacts')
       .select('*')
-      .or(`name.ilike.%${searchTerm}%,telephone.ilike.%${searchTerm}%,number.ilike.%${searchTerm}%`)
+      .or(`full_name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`)
       .order('created_at', { ascending: false })
     
     if (error) throw error

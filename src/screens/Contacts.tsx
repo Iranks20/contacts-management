@@ -24,9 +24,9 @@ export default function Contacts() {
   const positions = ['All Positions', ...Array.from(new Set(contacts.map(c => c.position)))]
 
   const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.telephone.includes(searchTerm) ||
-                         contact.number.includes(searchTerm)
+    const matchesSearch = contact.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         contact.phone.includes(searchTerm) ||
+                         contact.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesDistrict = !selectedDistrict || selectedDistrict === 'All Districts' || contact.district === selectedDistrict
     const matchesPosition = !selectedPosition || selectedPosition === 'All Positions' || contact.position === selectedPosition
     
@@ -41,8 +41,82 @@ export default function Contacts() {
   const loadContacts = async () => {
     try {
       setLoading(true)
-      const data = await contactService.getContacts()
-      setContacts(data)
+      // Use dummy data for now instead of Supabase
+      const dummyContacts: Contact[] = [
+        {
+          id: 1,
+          full_name: 'John Doe',
+          email: 'john.doe@example.com',
+          phone: '+256701234567',
+          region: 'Kampala',
+          district: 'Kampala Central',
+          position: 'Chairperson',
+          role: 'Delegate',
+          custom_role: '',
+          experience: '5 years in community organizing',
+          motivation: 'To support King Ceasor\'s vision for economic empowerment',
+          kc: 'KC001',
+          hb: 'HB001',
+          kk: 'KK001',
+          created_at: '2024-01-15T10:00:00Z',
+          updated_at: '2024-01-15T10:00:00Z'
+        },
+        {
+          id: 2,
+          full_name: 'Jane Smith',
+          email: 'jane.smith@example.com',
+          phone: '+256702345678',
+          region: 'Greater Mukono Region',
+          district: 'Mukono',
+          position: 'General Secretary',
+          role: 'Ground Agent',
+          custom_role: '',
+          experience: '3 years in youth mobilization',
+          motivation: 'To contribute to the campaign\'s success and help build networks',
+          kc: 'KC002',
+          hb: 'HB002',
+          kk: 'KK002',
+          created_at: '2024-01-16T11:00:00Z',
+          updated_at: '2024-01-16T11:00:00Z'
+        },
+        {
+          id: 3,
+          full_name: 'Michael Johnson',
+          email: 'michael.johnson@example.com',
+          phone: '+256703456789',
+          region: 'Ankole Region',
+          district: 'Mbarara District',
+          position: 'Treasurer',
+          role: 'Digital Influencer',
+          custom_role: '',
+          experience: 'Social media marketing and digital campaigns',
+          motivation: 'To leverage digital platforms for campaign outreach',
+          kc: 'KC003',
+          hb: 'HB003',
+          kk: 'KK003',
+          created_at: '2024-01-17T12:00:00Z',
+          updated_at: '2024-01-17T12:00:00Z'
+        },
+        {
+          id: 4,
+          full_name: 'Sarah Wilson',
+          email: 'sarah.wilson@example.com',
+          phone: '+256704567890',
+          region: 'West Nile Region',
+          district: 'Arua',
+          position: 'Coordinator',
+          role: 'Campaign Supporter',
+          custom_role: '',
+          experience: 'Event planning and community engagement',
+          motivation: 'To organize successful campaign events and mobilize support',
+          kc: 'KC004',
+          hb: 'HB004',
+          kk: 'KK004',
+          created_at: '2024-01-18T13:00:00Z',
+          updated_at: '2024-01-18T13:00:00Z'
+        }
+      ]
+      setContacts(dummyContacts)
     } catch (error) {
       console.error('Error loading contacts:', error)
       alert('Error loading contacts. Please check your Supabase configuration.')
@@ -72,8 +146,8 @@ export default function Contacts() {
 
     try {
       setDeletingContact(contactId)
-      await contactService.deleteContact(contactId)
-      await loadContacts()
+      // Remove from local state instead of calling Supabase
+      setContacts(prev => prev.filter(contact => contact.id !== contactId))
       setSelectedContacts(prev => prev.filter(id => id !== contactId))
     } catch (error) {
       console.error('Error deleting contact:', error)
@@ -87,8 +161,8 @@ export default function Contacts() {
     if (!confirm(`Are you sure you want to delete ${selectedContacts.length} contacts?`)) return
 
     try {
-      await contactService.deleteContacts(selectedContacts)
-      await loadContacts()
+      // Remove from local state instead of calling Supabase
+      setContacts(prev => prev.filter(contact => !selectedContacts.includes(contact.id!)))
       setSelectedContacts([])
     } catch (error) {
       console.error('Error deleting contacts:', error)
@@ -234,11 +308,12 @@ export default function Contacts() {
                         onChange={(e) => handleSelectAll(e.target.checked)}
                       />
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telephone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -253,15 +328,18 @@ export default function Contacts() {
                           onChange={(e) => handleSelectContact(contact.id!, e.target.checked)}
                         />
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.region}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.district}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{contact.full_name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.phone}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
                           {contact.position}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{contact.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.telephone}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.number}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {contact.role === 'None of the above' ? contact.custom_role : contact.role}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button

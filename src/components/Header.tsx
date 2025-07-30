@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Menu, MessageSquare, Users, BarChart3, LogOut } from 'lucide-react'
+import { Menu, MessageSquare, Users, BarChart3, LogOut, DollarSign } from 'lucide-react'
 import { Link } from '@/lib/Link'
 
 export default function Header() {
@@ -26,6 +26,10 @@ export default function Header() {
             <Link to="/MessageComposer" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-900 hover:bg-yellow-400 transition-colors cursor-pointer">
               <MessageSquare size={18} className="mr-2" />
               Send Message
+            </Link>
+            <Link to="/Payments" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-900 hover:bg-yellow-400 transition-colors cursor-pointer">
+              <DollarSign size={18} className="mr-2" />
+              Payments
             </Link>
           </nav>
 
