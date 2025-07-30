@@ -157,4 +157,43 @@ This starts:
 **Command to run frontend**: `npm run dev`
 **Frontend URL**: `http://localhost:5173`
 
+---
+
+## 🚀 **Deployment to Netlify**
+
+### **Step 1: Build the Project**
+```bash
+npm run build
+```
+
+### **Step 2: Deploy to Netlify**
+1. **Drag and drop** the `dist` folder to Netlify, OR
+2. **Connect your GitHub repository** to Netlify for automatic deployments
+
+### **Step 3: Configure Build Settings**
+Netlify will automatically detect the build settings from `netlify.toml`:
+- **Build command**: `npm run build`
+- **Publish directory**: `dist`
+- **Node version**: `18`
+
+### **Step 4: Environment Variables (if needed)**
+If you need environment variables, add them in Netlify's dashboard under:
+**Site settings** → **Environment variables**
+
+---
+
+## 🔧 **Troubleshooting Netlify Deployment**
+
+### **If you get a blank page:**
+1. Check the browser console for errors
+2. Verify the build completed successfully
+3. Check that `netlify.toml` is in your repository root
+4. Ensure `public/_redirects` file exists
+
+### **If you get MIME type errors:**
+The `netlify.toml` file should fix this automatically. If not:
+1. Clear Netlify cache
+2. Redeploy the site
+3. Check that all files are being served with correct MIME types
+
 Your frontend is **ready to connect to your backend**! 🎉 
