@@ -29,8 +29,7 @@ interface SMSResponse {
 class SMSService {
   private config: SMSConfig
   private baseUrl = 'https://api.africastalking.com/version1'
-  // TODO: Replace with your working backend endpoint
-  private proxyUrl = 'YOUR_BACKEND_ENDPOINT_HERE'
+  private apiUrl = 'https://sms-api-vlkr.onrender.com/api/sms/send'
 
   constructor(config: SMSConfig) {
     this.config = config
@@ -39,24 +38,21 @@ class SMSService {
   // Send a single SMS
   async sendSMS(to: string, message: string, from?: string): Promise<SMSResponse> {
     try {
-      const response = await fetch(`${this.proxyUrl}/sms/send`, {
+      const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          recipients: [this.formatPhoneNumber(to)],
+          to: this.formatPhoneNumber(to),
           message: message,
-          // Remove sender ID to use Africa's Talking default
-          apiKey: this.config.apiKey,
-          username: this.config.username,
         }),
       })
 
       const data = await response.json()
       
-      if (data.SMSMessageData) {
-        const smsData = data.SMSMessageData.Recipients[0]
+      if (data.success && data.response?.SMSMessageData?.Recipients?.[0]) {
+        const smsData = data.response.SMSMessageData.Recipients[0]
         return {
           success: smsData.status === 'Success',
           messageId: smsData.messageId,
@@ -67,7 +63,7 @@ class SMSService {
 
       return {
         success: false,
-        error: 'Failed to send SMS',
+        error: data.error || 'Failed to send SMS',
       }
     } catch (error) {
       console.error('SMS sending error:', error)
@@ -82,25 +78,23 @@ class SMSService {
   async sendBulkSMS(recipients: string[], message: string, from?: string): Promise<SMSResponse[]> {
     try {
       const formattedRecipients = recipients.map(phone => this.formatPhoneNumber(phone))
+      const recipientsString = formattedRecipients.join(',')
       
-      const response = await fetch(`${this.proxyUrl}/sms/send`, {
+      const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          recipients: formattedRecipients,
+          to: recipientsString,
           message: message,
-          // Remove sender ID to use Africa's Talking default
-          apiKey: this.config.apiKey,
-          username: this.config.username,
         }),
       })
 
       const data = await response.json()
       
-      if (data.SMSMessageData) {
-        return data.SMSMessageData.Recipients.map((recipient: any) => ({
+      if (data.success && data.response?.SMSMessageData?.Recipients) {
+        return data.response.SMSMessageData.Recipients.map((recipient: any) => ({
           success: recipient.status === 'Success',
           messageId: recipient.messageId,
           cost: recipient.cost,
@@ -110,7 +104,7 @@ class SMSService {
 
       return recipients.map(() => ({
         success: false,
-        error: 'Failed to send SMS',
+        error: data.error || 'Failed to send SMS',
       }))
     } catch (error) {
       console.error('Bulk SMS sending error:', error)
@@ -147,36 +141,17 @@ class SMSService {
     return /^\+256\d{9}$/.test(formatted)
   }
 
-  // Get SMS balance
+  // Get SMS balance - Not available with current API
   async getBalance(): Promise<{ balance: string; currency: string } | null> {
-    try {
-      const response = await fetch(`${this.proxyUrl}/sms/balance?apiKey=${this.config.apiKey}&username=${this.config.username}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      const data = await response.json()
-      
-      if (data.User) {
-        return {
-          balance: data.User.balance,
-          currency: data.User.currency,
-        }
-      }
-
-      return null
-    } catch (error) {
-      console.error('Error getting balance:', error)
-      return null
-    }
+    // Balance endpoint not available with current API
+    console.warn('Balance checking not available with current API')
+    return null
   }
 }
 
 const smsConfig: SMSConfig = {
-  apiKey: 'atsk_787575853229d33036526fc77c1a8bd8e314c82ac201fccbcaea75dd4bff749e3c916952',
-  username: 'pmsms',
+  apiKey: '', // Not needed - handled by backend
+  username: '', // Not needed - handled by backend
   // Removed senderId to use Africa's Talking default
 }
 

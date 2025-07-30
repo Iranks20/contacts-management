@@ -46,19 +46,18 @@ This starts:
 
 ## 🔧 **What You Need to Do Next**
 
-### **Step 1: Configure Your Backend Endpoint**
-1. Open `src/lib/sms.ts`
-2. Replace the `proxyUrl` with your working backend endpoint:
+### **Step 1: Backend API Connected**
+✅ The SMS service is now connected to your external API at:
    ```typescript
-   private proxyUrl = 'YOUR_BACKEND_ENDPOINT_HERE'  // ← Replace this
+   private apiUrl = 'https://sms-api-vlkr.onrender.com/api/sms/send'
    ```
 
-### **Step 2: Update SMS Configuration**
-1. In the same file, update the SMS configuration:
+### **Step 2: API Configuration**
+✅ The SMS configuration is set up to work with your backend:
    ```typescript
    const smsConfig: SMSConfig = {
-     apiKey: 'YOUR_ACTUAL_AFRICASTALKING_API_KEY',     // ← Replace this
-     username: 'YOUR_ACTUAL_AFRICASTALKING_USERNAME',   // ← Replace this
+     apiKey: '', // Handled by your backend
+     username: '', // Handled by your backend
    }
    ```
 
@@ -78,17 +77,17 @@ This starts:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Your Backend   │    │  Africa's       │
-│   (React)       │───▶│   (External)     │───▶│  Talking API    │
-│   localhost:5173│    │   (Your URL)     │    │                 │
+│   Frontend      │    │   Your API       │    │  Africa's       │
+│   (React)       │───▶│   (onrender.com) │───▶│  Talking API    │
+│   localhost:5173│    │   sms-api-vlkr   │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 **Flow:**
-1. **Frontend** sends SMS request to your backend
-2. **Your Backend** forwards to Africa's Talking API
+1. **Frontend** sends SMS request to your API
+2. **Your API** forwards to Africa's Talking API
 3. **Africa's Talking** sends SMS and returns response
-4. **Your Backend** forwards response back to frontend
+4. **Your API** forwards response back to frontend
 5. **Frontend** shows success/failure to user
 
 ---
@@ -144,14 +143,14 @@ This starts:
 
 ---
 
-## 🎉 **Status: READY FOR YOUR BACKEND!**
+## 🎉 **Status: READY TO USE!**
 
 **✅ Frontend**: Fully integrated  
-**✅ SMS Service**: Ready for your credentials  
+**✅ SMS Service**: Connected to your API  
 **✅ Contact Management**: Complete  
 **✅ Message Composer**: Fully functional  
 
-**Next Step**: Configure your backend endpoint and add your Africa's Talking credentials! 🚀
+**Next Step**: Start the frontend and test sending SMS! 🚀
 
 ---
 
