@@ -200,7 +200,7 @@ export default function ImportModal({ isOpen, onClose, onSuccess }: ImportModalP
                   <div className="text-sm text-red-700 space-y-1">
                     {importResults.invalid.slice(0, 3).map((item, index) => (
                       <div key={index}>
-                        <strong>{item.contact.name || 'Unknown'}:</strong> {item.errors.join(', ')}
+                        <strong>{item.contact.full_name || 'Unknown'}:</strong> {item.errors.join(', ')}
                       </div>
                     ))}
                     {importResults.invalid.length > 3 && (

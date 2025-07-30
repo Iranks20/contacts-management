@@ -174,7 +174,7 @@ export default function Dashboard() {
 
   const stats = [
     { 
-      title: 'Total Contacts', 
+      title: 'Total Delegates', 
       value: contacts.length.toString(), 
       icon: Users, 
       color: 'bg-blue-500',
@@ -217,9 +217,9 @@ export default function Dashboard() {
       <div className="min-h-screen bg-gray-50">
         <Components.Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-center h-64">
+        <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
-          </div>
+        </div>
         </main>
       </div>
     )
@@ -230,37 +230,37 @@ export default function Dashboard() {
       <Components.Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-2">Overview of your campaign management system</p>
-        </div>
+          </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
             <div key={index} className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex items-center">
+                  <div className="flex items-center">
                 <div className={`p-3 rounded-lg ${stat.color}`}>
-                  <stat.icon className="h-6 w-6 text-white" />
-                </div>
-                <div className="ml-4">
+                      <stat.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                 </div>
               </div>
               <p className="text-xs text-gray-500 mt-2">{stat.description}</p>
-            </div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
 
         {/* Main Content Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contacts Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Delegates Card */}
           <div className="bg-white rounded-lg shadow-lg">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Contacts Management</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Delegates Management</h2>
                   <p className="text-gray-600 mt-1">Manage campaign team members and volunteers</p>
                 </div>
                 <Users className="h-8 w-8 text-blue-500" />
@@ -269,7 +269,7 @@ export default function Dashboard() {
             <div className="p-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Total Contacts</span>
+                  <span className="text-sm text-gray-600">Total Delegates</span>
                   <span className="text-lg font-semibold text-gray-900">{contacts.length}</span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -281,27 +281,61 @@ export default function Dashboard() {
                   <span className="text-lg font-semibold text-gray-900">{new Set(contacts.map(c => c.region)).size}</span>
                 </div>
                 <div className="pt-4">
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Recent Contacts</h3>
-                  <div className="space-y-2">
-                    {contacts.slice(0, 3).map((contact) => (
-                      <div key={contact.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{contact.full_name}</p>
-                          <p className="text-xs text-gray-600">{contact.position} • {contact.district}</p>
-                        </div>
-                        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                          {contact.role}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="pt-4">
                   <Link 
                     to="/Contacts" 
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
                   >
-                    View All Contacts
+                    View All Delegates
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Campaign Statistics Card */}
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Campaign Statistics</h2>
+                  <p className="text-gray-600 mt-1">Geographic and role distribution</p>
+                </div>
+                <MapPin className="h-8 w-8 text-purple-500" />
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Total Regions</span>
+                  <span className="text-lg font-semibold text-gray-900">19</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Total Districts</span>
+                  <span className="text-lg font-semibold text-gray-900">135</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Delegates</span>
+                  <span className="text-lg font-semibold text-gray-900">{contacts.filter(c => c.role === 'Delegate').length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Ground Agents</span>
+                  <span className="text-lg font-semibold text-gray-900">{contacts.filter(c => c.role === 'Ground Agent').length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Digital Influencers</span>
+                  <span className="text-lg font-semibold text-gray-900">{contacts.filter(c => c.role === 'Digital Influencer').length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Campaign Supporters</span>
+                  <span className="text-lg font-semibold text-gray-900">{contacts.filter(c => c.role === 'Campaign Supporter').length}</span>
+                </div>
+                <div className="pt-4">
+                  <Link 
+                    to="/Contacts" 
+                    className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
+                  >
+                    View All Delegates
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Link>
                 </div>
@@ -339,27 +373,6 @@ export default function Dashboard() {
                   </span>
                 </div>
                 <div className="pt-4">
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Recent Payments</h3>
-                  <div className="space-y-2">
-                    {payments.slice(0, 3).map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{payment.personName}</p>
-                          <p className="text-xs text-gray-600">{payment.reason}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-semibold text-gray-900">
-                            UGX {payment.amount.toLocaleString()}
-                          </p>
-                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(payment.status)}`}>
-                            {payment.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="pt-4">
                   <Link 
                     to="/Payments" 
                     className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center"
@@ -377,16 +390,16 @@ export default function Dashboard() {
         <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link 
-              to="/Contacts" 
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Plus className="h-6 w-6 text-blue-500 mr-3" />
-              <div>
-                <p className="font-medium text-gray-900">Add New Contact</p>
-                <p className="text-sm text-gray-600">Register a new team member</p>
-              </div>
-            </Link>
+                         <Link 
+               to="/Contacts" 
+               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+             >
+               <Plus className="h-6 w-6 text-blue-500 mr-3" />
+               <div>
+                 <p className="font-medium text-gray-900">Add New Delegate</p>
+                 <p className="text-sm text-gray-600">Register a new team member</p>
+               </div>
+             </Link>
             <Link 
               to="/Payments" 
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
@@ -397,16 +410,16 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-600">Add a new payment record</p>
               </div>
             </Link>
-            <Link 
-              to="/MessageComposer" 
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <MessageSquare className="h-6 w-6 text-purple-500 mr-3" />
-              <div>
-                <p className="font-medium text-gray-900">Send Message</p>
-                <p className="text-sm text-gray-600">Send SMS to contacts</p>
-              </div>
-            </Link>
+                         <Link 
+               to="/MessageComposer" 
+               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+             >
+               <MessageSquare className="h-6 w-6 text-purple-500 mr-3" />
+               <div>
+                 <p className="font-medium text-gray-900">Send Message</p>
+                 <p className="text-sm text-gray-600">Send SMS to delegates</p>
+               </div>
+             </Link>
           </div>
         </div>
       </main>
