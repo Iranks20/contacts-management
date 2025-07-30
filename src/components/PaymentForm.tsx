@@ -23,6 +23,19 @@ interface PaymentFormProps {
   onSuccess: () => void
 }
 
+interface PaymentErrors {
+  personName?: string
+  phoneNumber?: string
+  district?: string
+  position?: string
+  amount?: string
+  paymentDate?: string
+  status?: string
+  reason?: string
+  accomplished?: string
+  notes?: string
+}
+
 export default function PaymentForm({ payment, isOpen, onClose, onSuccess }: PaymentFormProps) {
   const [formData, setFormData] = useState<Payment>({
     personName: '',
@@ -37,7 +50,7 @@ export default function PaymentForm({ payment, isOpen, onClose, onSuccess }: Pay
     notes: ''
   })
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Partial<Payment>>({})
+  const [errors, setErrors] = useState<PaymentErrors>({})
 
   useEffect(() => {
     if (payment) {
@@ -60,7 +73,7 @@ export default function PaymentForm({ payment, isOpen, onClose, onSuccess }: Pay
   }, [payment, isOpen])
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Payment> = {}
+    const newErrors: PaymentErrors = {}
 
     if (!formData.personName.trim()) {
       newErrors.personName = 'Person name is required'
@@ -120,14 +133,14 @@ export default function PaymentForm({ payment, isOpen, onClose, onSuccess }: Pay
   const handleInputChange = (field: keyof Payment, value: string | number | boolean) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: value as any
     }))
     
     // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as keyof PaymentErrors]) {
       setErrors(prev => ({
         ...prev,
-        [field]: undefined
+        [field as keyof PaymentErrors]: undefined
       }))
     }
   }
@@ -254,7 +267,10 @@ export default function PaymentForm({ payment, isOpen, onClose, onSuccess }: Pay
               <input
                 type="number"
                 value={formData.amount}
-                onChange={(e) => handleInputChange('amount', parseInt(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  handleInputChange('amount', isNaN(value) ? 0 : value);
+                }}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-yellow-500 focus:border-yellow-500 ${
                   errors.amount ? 'border-red-500' : 'border-gray-300'
                 }`}
