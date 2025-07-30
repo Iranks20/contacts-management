@@ -12,6 +12,7 @@ export default function Contacts() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState('')
   const [selectedDistrict, setSelectedDistrict] = useState('')
   const [selectedPosition, setSelectedPosition] = useState('')
   const [selectedContacts, setSelectedContacts] = useState<number[]>([])
@@ -20,17 +21,80 @@ export default function Contacts() {
   const [editingContact, setEditingContact] = useState<Contact | undefined>()
   const [deletingContact, setDeletingContact] = useState<number | null>(null)
 
-  const districts = ['All Districts', ...Array.from(new Set(contacts.map(c => c.district)))]
+  const allRegions = [
+    'All Regions',
+    'Kigezi Region',
+    'Greater Mukono Region',
+    'Kampala',
+    'Greater Luwero',
+    'Karamoja Sub-Region',
+    'Teso Region',
+    'Bukedi',
+    'Bugisu Region',
+    'Greater Masaka Region',
+    'Ankole Region',
+    'Rwenzori Region',
+    'Greater Mubende Region',
+    'Greater Mpigi',
+    'Busoga Region',
+    'Bunyoro Region',
+    'Lango Region',
+    'Acholi Region',
+    'West Nile Region',
+    'None of the above'
+  ]
+
+  const allDistricts = [
+    'All Districts',
+    // Kigezi Region
+    'Kabale', 'Rukiga', 'Rubanda', 'Kisoro', 'Rukungiri', 'Kanungu',
+    // Greater Mukono Region
+    'Mukono', 'Kayunga', 'Buikwe', 'Buvuma',
+    // Kampala
+    'Kampala Central', 'Kawempe', 'Nakawa', 'Makindye', 'Rubaga', 'Wakiso',
+    // Greater Luwero
+    'Luwero', 'Nakaseke', 'Nakasongola',
+    // Karamoja Sub-Region
+    'Moroto', 'Napak', 'Amudat', 'Nakapiripirit', 'Nabilatuk', 'Kotido', 'Abim', 'Kaabong', 'Karenga',
+    // Teso Region
+    'Soroti', 'Soroti City', 'Katakwi', 'Amuria', 'Kaberamaido', 'Kalaki', 'Kapelebyong', 'Ngora', 'Serere', 'Bukedea', 'Kumi',
+    // Bukedi
+    'Tororo', 'Tororo County', 'Butaleja', 'Busia', 'Budaka', 'Kibuku', 'Pallisa', 'Butebo',
+    // Bugisu Region
+    'Mbale', 'Sironko', 'Mbale City', 'Bulambuli', 'Manafwa', 'Namisindwa', 'Bududa', 'Kapchorwa', 'Kween', 'Bukwo',
+    // Greater Masaka Region
+    'Masaka City', 'Rakai', 'Kyotera', 'Kalangala', 'Masaka', 'Sembabule', 'Bukomansimbi', 'Lyantonde', 'Lwengo', 'Kalungu',
+    // Ankole Region
+    'Mbarara District', 'Mbarara City', 'Isingiro', 'Rwampara', 'Ntungamo', 'Kiruhura', 'Kazo', 'Ibanda', 'Bushenyi', 'Sheema', 'Buhweju', 'Mitooma', 'Rubirizi',
+    // Rwenzori Region
+    'Kasese', 'Kabarole', 'Fort Portal City', 'Bunyangabu', 'Bundibugyo', 'Ntoroko', 'Kamwenge', 'Kitagwenda', 'Kyegegwa', 'Kyenjojo',
+    // Greater Mubende Region
+    'Mityana', 'Mubende', 'Kasanda', 'Kyankwanzi', 'Kiboga',
+    // Greater Mpigi
+    'Mpigi', 'Gomba', 'Butambala',
+    // Busoga Region
+    'Kamuli', 'Jinja', 'Jinja City', 'Mayuge', 'Bugiri', 'Namayingo', 'Bugweri', 'Iganga', 'Kaliro', 'Luuka', 'Buyende', 'Namutumba',
+    // Bunyoro Region
+    'Kibaale', 'Kagadi', 'Kakumiro', 'Kiryandongo', 'Hoima', 'Hoima City', 'Kikuube', 'Masindi', 'Buliisa',
+    // Lango Region
+    'Lira City', 'Dokolo', 'Alebtong', 'Apac', 'Kole', 'Kwania', 'Lira', 'Amolatar', 'Otuke', 'Oyam',
+    // Acholi Region
+    'Gulu', 'Gulu City', 'Amuru', 'Nwoya', 'Omoro', 'Kitgum', 'Pader', 'Agago', 'Lamwo',
+    // West Nile Region
+    'Arua', 'Terego', 'Maracha', 'Koboko', 'Nebbi', 'Pakwach', 'Zombo', 'Yumbe', 'Moyo', 'Obongi', 'Adjumani', 'Madi-Okollo'
+  ]
+
   const positions = ['All Positions', ...Array.from(new Set(contacts.map(c => c.position)))]
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          contact.phone.includes(searchTerm) ||
                          contact.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesRegion = !selectedRegion || selectedRegion === 'All Regions' || contact.region === selectedRegion
     const matchesDistrict = !selectedDistrict || selectedDistrict === 'All Districts' || contact.district === selectedDistrict
     const matchesPosition = !selectedPosition || selectedPosition === 'All Positions' || contact.position === selectedPosition
     
-    return matchesSearch && matchesDistrict && matchesPosition
+    return matchesSearch && matchesRegion && matchesDistrict && matchesPosition
   })
 
   // Load contacts on component mount
@@ -222,7 +286,7 @@ export default function Contacts() {
           {/* Filters and Actions */}
           <div className="bg-white shadow-lg rounded-lg mb-6">
             <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
@@ -235,10 +299,19 @@ export default function Contacts() {
                 </div>
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 cursor-pointer"
+                  value={selectedRegion}
+                  onChange={(e) => setSelectedRegion(e.target.value)}
+                >
+                  {allRegions.map(region => (
+                    <option key={region} value={region}>{region}</option>
+                  ))}
+                </select>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 cursor-pointer"
                   value={selectedDistrict}
                   onChange={(e) => setSelectedDistrict(e.target.value)}
                 >
-                  {districts.map(district => (
+                  {allDistricts.map(district => (
                     <option key={district} value={district}>{district}</option>
                   ))}
                 </select>
